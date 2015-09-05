@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta charset="utf-8" />
-    <title>Server列表 - Server Monitor</title>
+    <title>Http Monitor</title>
     <link rel="stylesheet" type="text/css" href="/static/res/css/style.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <meta name="Keywords" content="Server monitor,python web, flask redis, flask http" />
     <meta name="Description" content="Redis Monitor: a python flask server monitor project, include redis and http server." />
     <link rel="shortcut icon" href="/static/res/favicon.ico"/>
     <link rel="bookmark" href="/static/res/favicon.ico"/>
-    <link href="/static/res/lib/olloading/loading.css" type="text/css" rel="stylesheet">
 </head>
-<body id="body_content">
-    <div id="wrapper">
+<body>
+    <div id="wrapper" server_md5="{{server_md5}}">
         <p class="breadcrumb">
-            <a href="/"><HEAD></HEAD>Home</a> &gt; Server List
+            <a href="/"><HEAD></HEAD>Home</a> &gt; <span class="server_host_port"></span> Monitor
         </p>
         <div class="bdsharebuttonbox" style="float:right;">
             <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
@@ -29,7 +28,7 @@
             <a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
             <a class="bds_count" data-cmd="count"></a>
         </div>
-        <h1>监控Server列表 - Server Monitor Informations </h1>
+        <h1>[<span class="server_host_port"></span>] Redis Monitor Informations </h1>
         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
         <ins class="adsbygoogle"
              style="display:block"
@@ -39,45 +38,39 @@
         <script>
         (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-        <form>
-        	<strong>Redis |</strong>
-            Host: <input type="text" placeholder="redis IP 地址" id="new_host" />&nbsp;&nbsp;
-        	Port: <input type="number" placeholder="6379" id="new_port" />&nbsp;&nbsp;
-        	Password: <input type="text" placeholder="" id="new_password" />&nbsp;&nbsp;
-        	Email: <input type="text" placeholder="报警提醒" id="new_email" />&nbsp;&nbsp;
-        	<input type="button" onclick="add_redis_btn_click()" value="添加/更新" />&nbsp;
-        	<input type="button" onclick="add_demo_redis_btn_click()" value="来个示例" />
-        </form>
-        <hr />
-        <form>
-            <strong>Http |</strong>
-            Url: <input type="text" placeholder="url 地址" id="new_http_url" />&nbsp;&nbsp;
-            <!-- Time: <input type="number" placeholder="警戒连通时间（ms）" id="new_http_time" />&nbsp;&nbsp; -->
-            Email: <input type="text" placeholder="报警提醒" id="new_http_email" />&nbsp;&nbsp;
-            <input type="button" onclick="add_http_btn_click()" value="添加/更新" />&nbsp;
-            <input type="button" onclick="add_demo_http_btn_click()" value="来个示例" />
-        </form>
-        <table id="server_table" width="100%" border="0" cellpadding="10" cellspacing="1" bgcolor="#CCCCCC" style="margin:1em 0;">
+        <table id="data_table" width="100%" border="0" cellpadding="10" cellspacing="1" bgcolor="#CCCCCC" style="margin:1em 0;">
             <tbody>
+            	<tr class="th_group">
+            		<th colspan="4">Server服务端</th>
+            	</tr>
+            	<tr>
+                    <th>状态码</th>
+                    <th>编码</th>
+                    <th>连接</th>
+                    <th>服务器</th>
+                </tr>
                 <tr>
-                    <th width="10%" bgcolor="#DDEEFF">类型</th>
-                    <th width="50%" bgcolor="#DDEEFF">Server Information</th>
-                    <th width="20%" bgcolor="#DDEEFF">添加时间</th>
-                    <th width="20%" bgcolor="#DDEEFF">操作</th>
+                    <td id="status_code"></td>
+                    <td id="encoding"></td>
+                    <td id="connection"></td>
+                    <td id="server"></td>
                 </tr>
             </tbody>
         </table>
+        <div class="chart_div" id="time_chart"></div>
+        <h2>其他服务器 </h2>
+        <ul id="other_server">
+        </ul>
         <p class="footer">
             <a href="/">Server Monitor</a> &gt; Author By aTool.org
         </p>
     </div>
     <script type="text/javascript" src="/static/res/lib/jquery.min.js"></script>
-    <!-- <script type="text/javascript" src="/static/res/lib/olloading/loading-min.js" charset="UTF-8"></script>
-	<script type="text/javascript" src="/static/res/lib/olloading/jquery.bgiframe.min.js" charset="UTF-8"></script> -->
-    <script type="text/javascript" src="/static/res/js/common.js"></script>
     <script type="text/javascript" src="/static/res/lib/md5.js"></script>
+    <script type="text/javascript" src="/static/res/js/common.js"></script>
     <script type="text/javascript" src="/static/res/lib/simpleStorage.js"></script>
-    <script type="text/javascript" src="/static/res/js/index.js"></script>
+    <script type="text/javascript" src="/static/res/lib/echarts/echarts.js"></script>
+    <script type="text/javascript" src="/static/res/js/http_monitor.js"></script>
     <script type="text/javascript">
     window._bd_share_config={"common":{"bdSnsKey":{"tsina":"2337303479","tqq":"801368329"},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
     </script>

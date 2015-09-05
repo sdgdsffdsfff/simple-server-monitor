@@ -4,17 +4,19 @@ Created on 2015年9月2日
 
 @author: hzwangzhiwei
 '''
+from app.wraps.singleton_wrap import singleton
 import hashlib
 import time
 import requests
 
+@singleton
 class HttpMonitor(object):
     '''
     classdocs
     '''
 
 
-    def __init__(self, timeout = 1):
+    def __init__(self, timeout = 3):
         '''
         Constructor
         '''
@@ -56,8 +58,9 @@ class HttpMonitor(object):
                     info['get_time'] = end - start
                     info['encoding'] = r.encoding
                     info['status_code'] = r.status_code
-                    info['headers'] = r.headers
-                    
+                    info['connection'] = r.headers.get('connection', '')
+                    info['server'] = r.headers.get('server', '')
+
                     http_rst['success'] = 1
                     http_rst['data'] = info
                 except:

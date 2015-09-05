@@ -1,4 +1,4 @@
-var intervalTime = 1100; //监控频率
+var intervalTime = 3000; //监控频率
 var is_start = true; //已经开始监控
 
 function monitor_task() {
@@ -18,17 +18,11 @@ function sec_2_hour(sec) {
 }
 
 function fill_data_table(data) {
-	var keys = ['redis_version', 'os', 'process_id', 'uptime_in_seconds', 'connected_clients', 'blocked_clients',   
-	            'total_connections_received', 'total_commands_processed', 'instantaneous_ops_per_sec', 'rejected_connections', 'expired_keys', 'evicted_keys', 'keyspace_hits', 'keyspace_misses']
+	var keys = ['status_code', 'http_length', 'encoding', 'connection', 'server']
 	var key = null;
 	for (var i in keys) {
 		key = keys[i];
-		if (key == 'uptime_in_seconds') {
-			$('#' + key).text(sec_2_hour(data[key]));
-		}
-		else {
-			$('#' + key).text(data[key]);
-		}
+		$('#' + key).text(data[key]);
 	}
 	
 	//遍历key中以db开头的，标示不同的数据库
@@ -57,66 +51,10 @@ function do_server_status(data) {
               x_date
            ]
         ]);
-		opschart.addData([
-		   [
-              0,
-              data.data.instantaneous_ops_per_sec,
-              false,
-              false,
-              x_date
-           ]
-        ]);
-		memchart.addData([
-		   [
-              0,
-              (data.data.used_memory / 1024).toFixed(2),
-              false,
-              false,
-              x_date
-           ],[
-              1,
-              (data.data.used_memory_rss / 1024).toFixed(2),
-              false,
-              false,
-              x_date
-           ]
-        ]);
-		
-		cpuchart.addData([
-		   [
-              0,
-              data.data.used_cpu_sys,
-              false,
-              false,
-              x_date
-           ],[
-              1,
-              data.data.used_cpu_user,
-              false,
-              false,
-              x_date
-           ],[
-              2,
-              data.data.used_cpu_user_children,
-              false,
-              false,
-              x_date
-           ],[
-              3,
-              data.data.used_cpu_sys_children,
-              false,
-              false,
-              x_date
-           ]
-           
-       ]);
 	}
 	else {
 		//填充空的数据
-		timechart.addData([[0, 0, false, false, x_date ]])
-		opschart.addData([[0, 0, false, false, x_date ]])
-		memchart.addData([[0, 0, false, false, x_date ], [0, 0, false, false, x_date ]])
-		cpuchart.addData([[0, 0, false, false, x_date ], [1, 0, false, false, x_date ], [2, 0, false, false, x_date ], [3, 0, false, false, x_date ]])
+		timechart.addData([[0, 30000, false, false, x_date]])
 	}
 	setTimeout(monitor_task, intervalTime);
 }
@@ -126,7 +64,7 @@ function get_server_data() {
 		type: "POST",
 		url: '/server_information.json',
 		timeout: 5000,
-		data: {'type': 'redis', 'host': server_info['host'], 'port': server_info['port'], 'password': server_info['password']},
+		data: {'type': server_info['type'], 'host': server_info['host'], 'port': server_info['port'], 'password': server_info['password']},
 		success: do_server_status, 
 		dataType: 'json',
 		async: true,
@@ -241,9 +179,6 @@ function fill_page(key) {
 var echarts = null;
 
 var timechart = null;
-var opschart = null;
-var memchart = null;
-var cpuchart = null;
 require.config({
     paths: {
         echarts: '/static/res/lib/echarts/'
@@ -258,12 +193,8 @@ require([
     function(ec) {
 		echarts = ec;
 		
-		timechart = draw_chart('time_chart', get_line_option('Redis实时联通情况', '', ['连接耗时'], '时间', 'ms'));
-		opschart = draw_chart('ops_chart', get_line_option('Redis每秒处理命令数', '', ['OPS'], '命令条数', ''));
-		memchart = draw_chart('mem_chart', get_line_option('Redis内存实时占用情况', '', ['Redis内存占用', '系统分配内存'], '内存占用', ' Kb'));
-		cpuchart = draw_chart('cpu_chart', get_line_option('Redis实时CPU占用情况', '', ['cpu_user', 'cpu_sys', 'cpu_user_children', 'cpu_sys_children'], 'CPU消耗', ''));
+		timechart = draw_chart('time_chart', get_line_option('Http Server实时联通情况', '', ['连接耗时'], '时间', 'ms'));
 		//开启监控
-
 		load_all_server_from_storage(); //加载本地数据
 		fill_page(get_server_key());
 		monitor_task();

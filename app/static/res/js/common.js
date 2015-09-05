@@ -1,46 +1,45 @@
-var redis_servers = []; //storeage中所有redis信息
+var server_servers = []; //storeage中所有redis信息
 
-function sort_redis_server() {
-	redis_servers = redis_servers.sort(function (a, b) {
+function sort_server_server() {
+	server_servers = server_servers.sort(function (a, b) {
         return a['timestamp'] - b['timestamp'];
     });
 }
 
 
 //md5，用于key值
-function _redis_md5(redis) {
-	return hex_md5(redis['host'] + redis['port']);
+function _server_md5(server) {
+	return hex_md5(server['type'] + server['host'] + server['port']);
 }
 
-function _valid_redis_storage(redis_info) {
-	if (redis_info.hasOwnProperty('host') && 
-			redis_info.hasOwnProperty('port') && 
-			redis_info.hasOwnProperty('password')) {
+function _valid_server_storage(server_info) {
+	if (server_info.hasOwnProperty('host') && 
+			server_info.hasOwnProperty('port')) {
 		return true;
 	}
 	return false;
 }
 
-function load_all_redis_from_storage() {
+function load_all_server_from_storage() {
 	var keys = simpleStorage.index();
 	var len = keys.length;
 	for(var i = 0; i < len; i ++) {
 		var key = keys[i];
-		if (key.startWith('redis_')) {
-			var redis_info = get_redis(key);
-			if (redis_info) {
-				redis_servers.push(redis_info);
+		if (key.startWith('server_')) {
+			var server_info = get_server(key);
+			if (server_info) {
+				server_servers.push(server_info);
 			}
 		}
 	}
-	sort_redis_server();
+	sort_server_server();
 }
 
-function get_redis(key) {
+function get_server(key) {
 	try {
-		var redis_info = simpleStorage.get(key);
-	    if (_valid_redis_storage(redis_info)) {
-	    	return redis_info;
+		var server_info = simpleStorage.get(key);
+	    if (_valid_server_storage(server_info)) {
+	    	return server_info;
 	    }
 	} catch(E) {
         console.log(E);

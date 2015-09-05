@@ -6,6 +6,18 @@ body {
 	margin:0px;
 }
 
+form {
+	margin: 5px;
+}
+
+input[type=text] {
+	width: 180px;
+}
+
+input[type=number] {
+	width: 100px;
+}
+
 table {
 	table-layout:fixed;
     word-wrap:break-word;
