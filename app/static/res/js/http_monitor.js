@@ -45,7 +45,7 @@ function do_server_status(data) {
 		timechart.addData([
 		   [
               0,        // 系列索引
-              data.data.get_time,
+              data.data.get_time * 1000,
               false,
               false,
               x_date
